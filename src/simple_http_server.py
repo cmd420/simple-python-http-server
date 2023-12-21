@@ -76,13 +76,13 @@ class HTTPResponse:
         headers = ""
         headers += f"Content-Length: {len(self.body)}{CRLF}"
 
-        for idx, (hname, hval) in enumerate(self.headers.items()):
+        for hname, hval in self.headers.items():
             if hname.lower() == "content-length":
                 continue
 
             headers += f"{hname}: {hval}"
 
-        return f"HTTP/1.0 {self.response_code}{CRLF}" f"{headers}{CRLF}" f"{self.body}"
+        return f"HTTP/1.0 {self.response_code}{CRLF}" f"{headers}{CRLF}" (f"{self.body}" if self.body else "") 
 
 
 class HTTPResponseBuilder:
@@ -187,7 +187,7 @@ class HTTPServer:
                 response_payload = str(_response)
             else:
                 raise ValueError(
-                    "Invalid Response. Response should be of type `HTTPResponseBuilder` or `HTTPResponse` or `tuple[int, str]` or `str`"
+                    "Invalid Response. Response should be of type `HTTPResponseBuilder` or `HTTPResponse` or `tuple[int, str]` or `dict` or `str`"
                 )
             
             client.sendall(response_payload.encode())
